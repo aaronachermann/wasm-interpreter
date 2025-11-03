@@ -1,0 +1,86 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+bin/
+lib/
+
+# CMake artifacts
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# Build artifacts
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.exp
+*.pdb
+*.ilk
+
+# IDE files - VS Code
+.vscode/
+*.code-workspace
+
+# IDE files - CLion
+.idea/
+cmake-build-debug/
+cmake-build-release/
+
+# IDE files - Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDE files - Xcode
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+
+# IDE files - Other
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Package managers
+conan.lock
+conanbuildinfo.txt
+conaninfo.txt
+graph_info.json
+
+# Testing
+Testing/
+CTestTestfile.cmake
+
+# Documentation build
+docs/_build/
+doxygen/
+
+# Profiling and debugging
+*.dSYM/
+*.gcda
+*.gcno
+*.gcov
+callgrind.out.*
+perf.data
+perf.data.old
