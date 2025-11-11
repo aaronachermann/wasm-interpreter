@@ -681,8 +681,6 @@ case Opcode::I32_TRUNC_F32_S: {
 }
 ```
 
-**Lesson Learned:** Always validate floating-point conversions against spec requirements. Silent failures are unacceptable.
-
 ### Challenge 2: LEB128 Sign Extension
 
 **Problem:** LEB128 signed integers require proper sign extension after decoding.
@@ -726,8 +724,6 @@ if (shift < 32 && (byte & 0x40)) {
 
 return value;
 ```
-
-**Lesson Learned:** LEB128 is subtle. Test with both positive and negative values.
 
 ### Challenge 3: Control Flow Stack Unwinding
 
@@ -778,7 +774,6 @@ case Opcode::BR: {
 }
 ```
 
-**Lesson Learned:** Stack machines require careful attention to value preservation during control flow.
 
 ### Challenge 4: Recursive Function State Management
 
@@ -830,7 +825,6 @@ case Opcode::CALL: {
 }
 ```
 
-**Lesson Learned:** State isolation is critical for recursion. Test with deeply recursive functions.
 
 ### Challenge 5: i64 Shift and Rotate Operations
 
@@ -878,7 +872,6 @@ case Opcode::I64_ROTL: {
 }
 ```
 
-**Lesson Learned:** Bit manipulation operations have subtle differences between 32-bit and 64-bit. Verify modulo values.
 
 ### Challenge 6: Division and Remainder Trap Conditions
 
@@ -924,7 +917,6 @@ case Opcode::I32_REM_S: {
 }
 ```
 
-**Lesson Learned:** Division operations require careful trap handling. Test edge cases.
 
 ### Challenge 7: Call_Indirect Type Checking
 
@@ -1034,133 +1026,6 @@ This is an **interpreter**, not a JIT compiler. Performance priorities:
 2. **Stack Caching:** Keep top N stack slots in local variables
 3. **Computed Goto:** Use GCC computed goto for faster dispatch
 4. **Inline Stack Checks:** Reduce function call overhead for push/pop
-
----
-
-## Code Quality Principles
-
-### 1. Clarity Over Cleverness
-
-**Principle:** Code should be obvious, not clever.
-
-**Example:**
-```cpp
-// GOOD: Clear and obvious
-if (a == 0) {
-    return 1;
-}
-return a * factorial(a - 1);
-
-// BAD: Clever but hard to understand
-return a ? a * factorial(a - 1) : 1;
-```
-
-### 2. Explicit Error Handling
-
-**Principle:** All error conditions are explicit traps or exceptions.
-
-**Example:**
-```cpp
-// Every error condition is explicit
-if (b == 0) {
-    throw Trap("integer divide by zero");
-}
-if (a == INT32_MIN && b == -1) {
-    throw Trap("integer overflow");
-}
-```
-
-### 3. Type Safety
-
-**Principle:** Runtime type checking prevents undefined behavior.
-
-**Example:**
-```cpp
-int32_t Stack::popI32() {
-    if (stack_.empty()) {
-        throw InterpreterError("Stack underflow");
-    }
-    TypedValue val = stack_.back();
-    if (val.type != TypedValue::I32) {
-        throw InterpreterError("Type mismatch: expected i32");
-    }
-    stack_.pop_back();
-    return val.value.i32;
-}
-```
-
-### 4. Clear Comments
-
-**Principle:** Comments explain why, not what.
-
-**Good Comments:**
-```cpp
-// WebAssembly spec requires trapping on NaN/Inf conversion
-if (std::isnan(a) || std::isinf(a)) {
-    throw Trap("Invalid conversion");
-}
-
-// Sign extend LEB128 signed integers
-if (shift < 32 && (byte & 0x40)) {
-    value |= -(1 << (shift + 7));
-}
-```
-
-**Bad Comments:**
-```cpp
-// Pop from stack
-int32_t a = stack_.popI32();
-
-// Add two numbers
-int32_t result = a + b;
-```
-
-### 5. Const Correctness
-
-**Principle:** Use const wherever possible.
-
-**Example:**
-```cpp
-const FuncType* getFunctionType(uint32_t func_index) const {
-    // const method can't modify state
-    return &types[function_type_indices[func_index]];
-}
-
-void execute(const Module& module) {
-    // module cannot be modified
-}
-```
-
-### 6. RAII for Resource Management
-
-**Principle:** Use RAII for automatic resource cleanup.
-
-**Example:**
-```cpp
-class Memory {
-private:
-    std::vector<uint8_t> data_;  // Automatically freed
-
-public:
-    ~Memory() = default;  // No manual cleanup needed
-};
-```
-
-### 7. Modern C++ Features
-
-**Used Features:**
-- `std::vector` for dynamic arrays
-- `std::unique_ptr` for ownership
-- `enum class` for type-safe enums
-- `std::move` for move semantics
-- Range-based for loops
-- Auto type deduction (sparingly)
-
-**Avoided Features:**
-- Raw pointers (except for non-owning references)
-- Manual memory management (new/delete)
-- C-style casts
-- Macros (except include guards)
 
 ---
 
@@ -1276,7 +1141,7 @@ Most failures are in:
    - Inline push/pop operations
    - Reduce function call overhead
 
-### Long Term (Production)
+### Long Term 
 
 1. **JIT Compilation:**
    - Translate WebAssembly to native machine code
@@ -1322,21 +1187,9 @@ This WebAssembly MVP interpreter demonstrates production-quality engineering pra
 - Test-driven development approach
 - Production-ready code structure
 
-**Design Philosophy:**
-- Correctness over performance (while maintaining acceptable speed)
-- Clarity over cleverness (readable, maintainable code)
-- Security by default (type safety, bounds checking, trap handling)
-- Spec compliance (faithful implementation of WebAssembly standard)
-
-This implementation serves as a solid foundation for understanding WebAssembly internals and could be extended to a production JIT compiler with the optimizations outlined in the Future Improvements section.
-
-The interpreter successfully executes real-world WebAssembly programs including recursive algorithms (factorial, fibonacci), complex floating-point calculations, dynamic memory management, and indirect function dispatch—demonstrating readiness for practical use.
-
 ---
 
-**Document Version:** 1.0
+**Document Version:** 1.1
 **Last Updated:** November 2025
-**Lines of Code:** ~3,200 (excluding tests)
-**Implementation Time:** 2 days
 **Test Pass Rate:** 96.4% (161/167 tests)
 
