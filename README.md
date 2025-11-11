@@ -401,34 +401,6 @@ g++ -std=c++17 -I../include ../tests/test_runner_03.cpp ../src/*.cpp -o test_run
 ./wasm-interpreter tests/wat/03_test_prio2.wasm _test_call_indirect_add
 ```
 
-## Performance & Statistics
-
-### Code Metrics
-
-- **Total Implementation**: ~2,300 lines of production C++ code
-- **Core Interpreter**: ~1,950 lines (`interpreter.cpp`)
-- **Binary Decoder**: ~620 lines (`decoder.cpp`)
-- **Support Modules**: ~730 lines (memory, stack, types, instructions)
-
-### Instruction Coverage
-
-- **200+ WebAssembly 1.0 instructions**: Fully implemented
-- **8 Post-MVP instructions**: Saturating conversions (0xFC prefix)
-- **1 WASI system call**: fd_write with iovec support
-
-### Test Execution
-
-- **Test Suites**: 15 comprehensive test files (315 total tests)
-- **MVP Coverage**: 228/228 tests passing (100%)
-- **Execution Time**: <100ms for full test suite
-- **Memory Usage**: Minimal (stack-based, no JIT overhead)
-
-### Development Efficiency
-
-- **Implementation Time**: ~2 days for complete MVP + post-MVP features
-- **First-Pass Success Rate**: 96.4% (MVP tests on day 2)
-- **Final Success Rate**: 100% MVP + 40% post-MVP features
-- **Debugging Iterations**: Minimal due to comprehensive type checking
 
 ## Limitations and Future Work
 
@@ -452,8 +424,6 @@ This interpreter prioritizes **correctness and completeness** for the WebAssembl
   - Reference types (WebAssembly 2.0)
   - SIMD operations (WebAssembly 2.0)
 
-**Design Philosophy:**
-The implementation demonstrates a strong foundation in systems programming and specification adherence. The 100% MVP pass rate validates correct implementation of all core WebAssembly features. Post-MVP features can be incrementally added as needed.
 
 ### Potential Improvements
 
@@ -481,101 +451,9 @@ The implementation demonstrates a strong foundation in systems programming and s
 - Interactive REPL for experimentation
 - Integration with wabt tools
 
-## Development Timeline
-
-### Day 1: Foundation and Core Operations
-- **Morning**: Project structure, CMake configuration, binary decoder implementation
-  - Implemented all 11 section parsers
-  - Complete LEB128 decoding (signed/unsigned, 32/64-bit)
-  - Module data structure population
-
-- **Afternoon**: Interpreter core and i32 operations
-  - Stack-based execution engine
-  - All i32 arithmetic, bitwise, comparison operations
-  - Control flow: blocks, loops, if/else, branching
-  - Memory operations: load/store with all variants
-  - **Result**: 54/54 tests passing on 01_test.wasm
-
-### Day 2: Advanced Features and MVP Completion
-- **Morning**: Floating-point and function calls
-  - All f32/f64 arithmetic and math functions
-  - Direct function calls with state management
-  - Recursive function support (factorial, fibonacci)
-  - Type conversion operations
-  - **Result**: 55/55 tests passing on 02_test_prio1.wasm
-
-- **Afternoon**: i64 operations, tables, and remaining MVP tests
-  - Complete i64 operation set (arithmetic, bitwise, comparisons)
-  - Data segment initialization with offset evaluation
-  - Indirect calls via call_indirect
-  - Element segment processing for function tables
-  - Fixed memory.size/memory.grow PC synchronization bug
-  - **Result**: 228/228 MVP tests passing (100%)
-
-- **Evening**: Post-MVP Extensions
-  - Implemented saturating float-to-int conversions (0xFC prefix, 8 instructions)
-  - Added WASI fd_write support for console output
-  - **Result**: 263/315 total tests passing (83.5%)
-
-**Total Implementation**: ~2,300 lines of production C++ code over 2 days
-
-## Technical Specifications
-
-### WebAssembly MVP (1.0) Compliance
-
-This interpreter implements the [WebAssembly Core Specification Version 1.0](https://www.w3.org/TR/wasm-core-1/) including:
-
-- **Binary Format**: Complete decoder for all section types
-- **Validation**: Implicit validation during decoding and execution
-- **Execution**: Stack-based interpreter with proper semantics
-- **Numerics**: IEEE 754-2019 compliant floating-point operations
-
-### Performance Characteristics
-
-- **Decoding**: O(n) where n is binary size, single-pass parsing
-- **Execution**: Pure interpretation, no JIT optimization
-- **Memory**: Linear memory model, page-based allocation (64KB pages)
-- **Call Overhead**: Frame allocation per function call (recursion supported)
-
-### Code Quality
-
-- **C++ Standard**: C++17 for modern features and compatibility
-- **Memory Safety**: No raw pointers, RAII for resource management
-- **Error Handling**: Comprehensive exception hierarchy (InterpreterError, Trap)
-- **Comments**: Clear English documentation throughout (no emojis in production code)
-- **Testing**: 100% MVP test pass rate (228/228), 83.5% overall (263/315)
-
-## Tools and References
-
-### WebAssembly Resources
-
-- [WebAssembly Specification](https://webassembly.github.io/spec/core/) - Official spec
-- [WebAssembly MDN Documentation](https://developer.mozilla.org/en-US/docs/WebAssembly) - Reference
-- [Understanding WebAssembly Binary Format](https://webassembly.github.io/spec/core/binary/index.html)
-
-### Development Tools
-
-- [WABT - WebAssembly Binary Toolkit](https://github.com/WebAssembly/wabt) - wat2wasm, wasm2wat
-- [CMake](https://cmake.org/) - Build system (3.15+)
-- [wat2wasm Online](https://webassembly.github.io/wabt/demo/wat2wasm/) - Convert text to binary format
-
-### Build Requirements
-
-- **CMake**: 3.15 or higher
-- **C++ Compiler**: GCC 7+, Clang 5+, MSVC 2017+, or Apple Clang 10+
-- **Standard Library**: C++17 standard library with `<cmath>`, `<cstring>`, `<memory>`
-
-## License
-
-This project is a demonstration implementation created for the NVIDIA engineering assessment. It is provided for evaluation purposes.
-
-**Copyright (c) 2025**
-
-This software is provided as-is for assessment and educational purposes. Not intended for production use without further hardening and testing.
-
 ## Author
 
-**Aaron**
+**Aaron Achermann**
 *November 2025*
 
 Developed as part of NVIDIA engineering assessment to demonstrate:
