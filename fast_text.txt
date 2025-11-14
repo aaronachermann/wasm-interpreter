@@ -1,0 +1,1 @@
+./bin/wasm-interpreter ../add.wasm add 5 10
