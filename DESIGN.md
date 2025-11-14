@@ -1,10 +1,5 @@
 # WebAssembly Interpreter: Technical Design Document
 
-**Author:** Aaron Muir
-**Date:** November 2025
-**Purpose:** NVIDIA Engineering Assessment - Technical Architecture Documentation
-**Target Audience:** Senior Software Engineers
-
 ---
 
 ## Executive Summary
